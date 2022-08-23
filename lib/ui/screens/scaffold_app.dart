@@ -4,7 +4,10 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
+import 'package:sicuritalia_app_flutter/ui/screens/advicepage_screen.dart';
 import 'package:sicuritalia_app_flutter/ui/screens/homepage_screen.dart';
+import 'package:sicuritalia_app_flutter/utils/providers/navigation_bar_provider.dart';
 import 'package:sicuritalia_app_flutter/utils/stores/bottom_bar_store.dart';
 import 'package:sicuritalia_app_flutter/utils/theme/custom_theme.dart';
 
@@ -21,9 +24,7 @@ class _ScaffoldAppState extends State<ScaffoldApp> {
   List<Widget> _listPage = [
     
     HomepageScreen(),
-    Center(
-      child: Text('Avvisi'),
-    ),
+    AdvicePageScreen(),
     Center(
       child: Text('Aiuto'),
     ),
@@ -35,14 +36,13 @@ class _ScaffoldAppState extends State<ScaffoldApp> {
     )
   ];
 
-  void _onItemTapped(int index) {
-    bottomBarStore.change(index);
-  }
+  
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-        builder: (context) => Scaffold(
+    final _screenindexprovider = Provider.of<BottomNavigationBarProvider>(context);
+    int currentScreenIndex = _screenindexprovider.currentIndex;
+    return Scaffold(
             appBar: AppBar(
               actions: [
                 GestureDetector(
@@ -65,7 +65,7 @@ class _ScaffoldAppState extends State<ScaffoldApp> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold)),
             ),
-            body:  _listPage[bottomBarStore.selectedIndex],
+            body:  _listPage[currentScreenIndex],
             
             bottomNavigationBar: BottomNavigationBar(
               showSelectedLabels: false,
@@ -95,8 +95,8 @@ class _ScaffoldAppState extends State<ScaffoldApp> {
                   label: 'School',
                 ),
               ],
-              currentIndex: bottomBarStore.selectedIndex,
-              onTap: _onItemTapped,
-            )));
+              currentIndex: currentScreenIndex,
+              onTap:(value) => _screenindexprovider.currentIndex =value,
+            ));
   }
 }
